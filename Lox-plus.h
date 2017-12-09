@@ -13,6 +13,8 @@ class Token;
 class LoxPlus
 {
 public:
+    LoxPlus() = delete;
+
     static int runFile(const char*  name);
     static void runPrompt();
     static void run(std::string_view source);
@@ -27,8 +29,6 @@ private:
 
     static inline bool hadError = false;
     static inline bool hadRuntimeError = false;
-
-    LoxPlus() = delete;
 };
 
 

@@ -20,7 +20,7 @@ public:
     RuntimeError & operator=(RuntimeError &&) = default;
 
 
-    const Token token;
+    Token token;
 };
 
 

@@ -18,7 +18,7 @@ public:
     Return & operator=(const Return &) = delete;
     Return & operator=(Return &&) = default;
 
-    const Object value;
+    Object value;
 };
 
 

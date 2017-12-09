@@ -78,7 +78,7 @@ void Resolver::visitSetExpr(SetExpr & expr)
 
 void Resolver::visitVariableExpr(VariableExpr & expr)
 {
-    if (!scopes.empty() && scopes.back()[expr.name.lexeme] == false)
+    if (!scopes.empty() && !scopes.back()[expr.name.lexeme])
     {
         LoxPlus::error(expr.name, "Cannot read local variable in its own initializer.");
     }

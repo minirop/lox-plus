@@ -67,5 +67,5 @@ Environment * Environment::ancestor(unsigned long distance)
 
 void Environment::assignAt(unsigned long distance, Token name, Object value)
 {
-    ancestor(distance)->values[name.lexeme] = value;
+    ancestor(distance)->values[name.lexeme] = std::move(value);
 }

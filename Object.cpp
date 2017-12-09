@@ -6,8 +6,6 @@
 #include "LoxCallable.h"
 #include "LoxInstance.h"
 #include "LoxFunction.h"
-#include "ObjectVar.h"
-#include "RuntimeError.h"
 
 Object::Object()
     : Object(nullptr)
@@ -27,7 +25,6 @@ Object::Object(double d)
 Object::Object(bool b)
     : data { new ObjectVar(b) }
 {
-    int s;
 }
 
 Object::Object(std::nullptr_t)

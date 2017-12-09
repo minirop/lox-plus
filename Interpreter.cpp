@@ -8,15 +8,15 @@
 #include "LoxFunction.h"
 #include "LoxInstance.h"
 #include "Return.h"
-#include "LoxClass.h"
 #include <iostream>
 
 using namespace std::string_literals;
 
-Interpreter::Interpreter()
-{
+Interpreter::Interpreter() = default;
+//{
+    // future STD
     //globals.define("clock", ...);
-}
+//}
 
 void Interpreter::visitAssignExpr(AssignExpr & expr)
 {
@@ -312,7 +312,7 @@ void Interpreter::visitClassStmt(ClassStmt & stmt)
     std::map<std::string, std::shared_ptr<LoxFunction>> methods;
     for (auto & method : stmt.methods)
     {
-        auto function = std::make_shared<LoxFunction>(*method, environment, method->name.lexeme == "init");
+        auto function = std::make_shared<LoxFunction>(method.get(), environment, method->name.lexeme == "init");
         methods.emplace(method->name.lexeme, function);
     }
 
@@ -327,7 +327,7 @@ void Interpreter::visitExpressionStmt(ExpressionStmt & stmt)
 
 void Interpreter::visitFunctionStmt(FunctionStmt & stmt)
 {
-    auto function = std::make_shared<LoxFunction>(stmt, environment, false);
+    auto function = std::make_shared<LoxFunction>(&stmt, environment, false);
     environment->define(stmt.name.lexeme, std::move(function));
 }
 
@@ -387,7 +387,7 @@ void Interpreter::executeBlock(const std::vector<std::unique_ptr<Stmt>> & statem
 
     try
     {
-        this->environment = environment;
+        this->environment = std::move(environment);
 
         for (auto & statement : statements)
         {
