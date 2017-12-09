@@ -7,18 +7,18 @@
 #include "LoxInstance.h"
 #include "LoxFunction.h"
 
-LoxClass::LoxClass(std::string name, std::map<std::string, LoxFunction*> methods)
-    : name { name }, methods { methods }
+LoxClass::LoxClass(std::string name, std::map<std::string, std::shared_ptr<LoxFunction>> && methods)
+    : name { std::move(name) }, methods { std::move(methods) }
 {
 }
 
 Object LoxClass::call(Interpreter & interpreter, std::vector<Object> arguments)
 {
-    auto instance = new LoxInstance(this);
+    auto instance = std::make_shared<LoxInstance>(shared_from_this());
 
     if (methods.count("init"))
     {
-        auto initializer = methods["init"];
+        auto initializer = methods["init"].get();
         initializer->bind(instance)->call(interpreter, arguments);
     }
 
@@ -34,11 +34,11 @@ int LoxClass::arity() const
     return 0;
 }
 
-LoxFunction * LoxClass::findMethod(LoxInstance * instance, std::string name)
+std::shared_ptr<LoxFunction> LoxClass::findMethod(std::shared_ptr<LoxInstance> instance, std::string name)
 {
     if (methods.count(name))
     {
-        return methods[name]->bind(instance);
+        return methods[name]->bind(std::move(instance));
     }
 
     return nullptr;

@@ -5,7 +5,7 @@
 #include "Return.h"
 
 Return::Return(Object value)
-    : value { value }
+    : value { std::move(value) }
 {
 
 }

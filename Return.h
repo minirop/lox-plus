@@ -13,6 +13,11 @@ class Return
 public:
     explicit Return(Object value);
 
+    Return(const Return &) = delete;
+    Return(Return &&) = default;
+    Return & operator=(const Return &) = delete;
+    Return & operator=(Return &&) = default;
+
     const Object value;
 };
 

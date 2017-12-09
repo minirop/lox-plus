@@ -57,6 +57,10 @@ Environment * Environment::ancestor(unsigned long distance)
     {
         environment = environment->enclosing;
     }
+    if (environment == nullptr)
+    {
+        std::cout << "BUUUUUUUUUUUUUUUUUUG: " << distance << "\n";
+    }
 
     return environment;
 }

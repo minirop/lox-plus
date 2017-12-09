@@ -5,7 +5,6 @@
 
 #include <fstream>
 #include <vector>
-#include <string>
 #include <boost/algorithm/string/split.hpp>
 #include <iostream>
 
@@ -47,32 +46,33 @@ int main(int argc, char** argv)
         << "#include \"Token.h\"\n"
         << "#include \"Object.h\"\n"
         << "#include <vector>\n"
+        << "#include <memory>\n"
         << "\n";
 
     defineAst(file, "Expr", {
-        "Assign   : Token name, Expr* value",
-        "Binary   : Expr* left, Token op, Expr* right",
-        "Call     : Expr* callee, Token paren, std::vector<Expr*> arguments",
-        "Get      : Expr* object, Token name",
-        "Grouping : Expr* expression",
+        "Assign   : Token name, std::unique_ptr<Expr> value",
+        "Binary   : std::unique_ptr<Expr> left, Token op, std::unique_ptr<Expr> right",
+        "Call     : std::unique_ptr<Expr> callee, Token paren, std::vector<std::unique_ptr<Expr>> arguments",
+        "Get      : std::unique_ptr<Expr> object, Token name",
+        "Grouping : std::unique_ptr<Expr> expression",
         "Literal  : Object value",
-        "Logical  : Expr* left, Token op, Expr* right",
-        "Set      : Expr* object, Token name, Expr* value",
+        "Logical  : std::unique_ptr<Expr> left, Token op, std::unique_ptr<Expr> right",
+        "Set      : std::unique_ptr<Expr> object, Token name, std::unique_ptr<Expr> value",
         "This     : Token keyword",
-        "Unary    : Token op, Expr* right",
+        "Unary    : Token op, std::unique_ptr<Expr> right",
         "Variable : Token name"
     });
 
     defineAst(file, "Stmt", {
-        "Block      : std::vector<Stmt*> statements",
-        "Class      : Token name, std::vector<FunctionStmt*> methods",
-        "Expression : Expr* expression",
-        "Function   : Token name, std::vector<Token> parameters, std::vector<Stmt*> body",
-        "If         : Expr* condition, Stmt* thenBranch, Stmt* elseBranch",
-        "Print      : Expr* expression",
-        "Return     : Token keyword, Expr* value",
-        "Var        : Token name, Expr* initializer",
-        "While      : Expr* condition, Stmt* body"
+        "Block      : std::vector<std::unique_ptr<Stmt>> statements",
+        "Class      : Token name, std::vector<std::unique_ptr<FunctionStmt>> methods",
+        "Expression : std::unique_ptr<Expr> expression",
+        "Function   : Token name, std::vector<Token> parameters, std::vector<std::unique_ptr<Stmt>> body",
+        "If         : std::unique_ptr<Expr> condition, std::unique_ptr<Stmt> thenBranch, std::unique_ptr<Stmt> elseBranch",
+        "Print      : std::unique_ptr<Expr> expression",
+        "Return     : Token keyword, std::unique_ptr<Expr> value",
+        "Var        : Token name, std::unique_ptr<Expr> initializer",
+        "While      : std::unique_ptr<Expr> condition, std::unique_ptr<Stmt> body"
     });
 
     file<< "#endif //LOXPLUS_AST_H\n";
@@ -145,7 +145,16 @@ void defineType(std::ofstream & file, std::string_view baseName, std::string_vie
         std::vector<std::string> data;
         boost::split(data, field, [](char c){ return c == ' '; });
 
-        file<< data[1] << " { " << data[1] << " }";
+        file<< data[1] << " { ";
+        if (data[0].find(':') != std::string::npos || data[0] == "Token" || data[0] == "Object")
+        {
+            file<< "std::move(" << data[1] << ")";
+        }
+        else
+        {
+            file<< data[1];
+        }
+        file<< " }";
         i++;
         if (i < fields.size()) file<< ", ";
         else file<< "\n";
@@ -159,7 +168,7 @@ void defineType(std::ofstream & file, std::string_view baseName, std::string_vie
     }
 
     file<< "\n"
-        << "\tvoid accept(Visitor" << baseName << " & visitor)\n"
+        << "\tvoid accept(Visitor" << baseName << " & visitor) override\n"
         << "\t{\n"
         << "\t\tvisitor.visit" << className << baseName << "(*this);\n"
         << "\t}\n";

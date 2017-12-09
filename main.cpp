@@ -10,7 +10,7 @@ int main(int argc, char** argv)
     }
     else if (argc == 2)
     {
-        return LoxPlus::runFile(argv[1]);
+        return 0;LoxPlus::runFile(argv[1]);
     }
     else
     {

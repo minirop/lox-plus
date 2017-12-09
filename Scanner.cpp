@@ -102,7 +102,7 @@ char Scanner::advance()
 
 void Scanner::addToken(TokenType type)
 {
-    addToken(type, 0);
+    addToken(type, nullptr);
 }
 
 bool Scanner::match(char expected)
@@ -162,9 +162,7 @@ void Scanner::number()
     }
 
     auto value_str = source.substr(start, current - start);
-    double d = 0.0;
-    //std::from_chars(value_str.data(), value_str.data() + value_str.size(), d);
-    d = std::stod(std::string(value_str));
+    double d = std::stod(std::string(value_str));
     addToken(TokenType::NUMBER, d);
 }
 

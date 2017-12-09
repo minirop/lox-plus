@@ -4,6 +4,7 @@
 #include "Token.h"
 #include "Object.h"
 #include <vector>
+#include <memory>
 
 class AssignExpr;
 class BinaryExpr;
@@ -41,15 +42,15 @@ struct Expr
 
 struct AssignExpr : Expr
 {
-	AssignExpr(Token name, Expr* value)
-		: name { name }, value { value }
+	AssignExpr(Token name, std::unique_ptr<Expr> value)
+		: name { std::move(name) }, value { std::move(value) }
 	{
 	}
 
 	Token name;
-	Expr* value;
+	std::unique_ptr<Expr> value;
 
-	void accept(VisitorExpr & visitor)
+	void accept(VisitorExpr & visitor) override
 	{
 		visitor.visitAssignExpr(*this);
 	}
@@ -57,16 +58,16 @@ struct AssignExpr : Expr
 
 struct BinaryExpr : Expr
 {
-	BinaryExpr(Expr* left, Token op, Expr* right)
-		: left { left }, op { op }, right { right }
+	BinaryExpr(std::unique_ptr<Expr> left, Token op, std::unique_ptr<Expr> right)
+		: left { std::move(left) }, op { std::move(op) }, right { std::move(right) }
 	{
 	}
 
-	Expr* left;
+	std::unique_ptr<Expr> left;
 	Token op;
-	Expr* right;
+	std::unique_ptr<Expr> right;
 
-	void accept(VisitorExpr & visitor)
+	void accept(VisitorExpr & visitor) override
 	{
 		visitor.visitBinaryExpr(*this);
 	}
@@ -74,16 +75,16 @@ struct BinaryExpr : Expr
 
 struct CallExpr : Expr
 {
-	CallExpr(Expr* callee, Token paren, std::vector<Expr*> arguments)
-		: callee { callee }, paren { paren }, arguments { arguments }
+	CallExpr(std::unique_ptr<Expr> callee, Token paren, std::vector<std::unique_ptr<Expr>> arguments)
+		: callee { std::move(callee) }, paren { std::move(paren) }, arguments { std::move(arguments) }
 	{
 	}
 
-	Expr* callee;
+	std::unique_ptr<Expr> callee;
 	Token paren;
-	std::vector<Expr*> arguments;
+	std::vector<std::unique_ptr<Expr>> arguments;
 
-	void accept(VisitorExpr & visitor)
+	void accept(VisitorExpr & visitor) override
 	{
 		visitor.visitCallExpr(*this);
 	}
@@ -91,15 +92,15 @@ struct CallExpr : Expr
 
 struct GetExpr : Expr
 {
-	GetExpr(Expr* object, Token name)
-		: object { object }, name { name }
+	GetExpr(std::unique_ptr<Expr> object, Token name)
+		: object { std::move(object) }, name { std::move(name) }
 	{
 	}
 
-	Expr* object;
+	std::unique_ptr<Expr> object;
 	Token name;
 
-	void accept(VisitorExpr & visitor)
+	void accept(VisitorExpr & visitor) override
 	{
 		visitor.visitGetExpr(*this);
 	}
@@ -107,14 +108,14 @@ struct GetExpr : Expr
 
 struct GroupingExpr : Expr
 {
-	explicit GroupingExpr(Expr* expression)
-		: expression { expression }
+	explicit GroupingExpr(std::unique_ptr<Expr> expression)
+		: expression { std::move(expression) }
 	{
 	}
 
-	Expr* expression;
+	std::unique_ptr<Expr> expression;
 
-	void accept(VisitorExpr & visitor)
+	void accept(VisitorExpr & visitor) override
 	{
 		visitor.visitGroupingExpr(*this);
 	}
@@ -123,13 +124,13 @@ struct GroupingExpr : Expr
 struct LiteralExpr : Expr
 {
 	explicit LiteralExpr(Object value)
-		: value { value }
+		: value { std::move(value) }
 	{
 	}
 
 	Object value;
 
-	void accept(VisitorExpr & visitor)
+	void accept(VisitorExpr & visitor) override
 	{
 		visitor.visitLiteralExpr(*this);
 	}
@@ -137,16 +138,16 @@ struct LiteralExpr : Expr
 
 struct LogicalExpr : Expr
 {
-	LogicalExpr(Expr* left, Token op, Expr* right)
-		: left { left }, op { op }, right { right }
+	LogicalExpr(std::unique_ptr<Expr> left, Token op, std::unique_ptr<Expr> right)
+		: left { std::move(left) }, op { std::move(op) }, right { std::move(right) }
 	{
 	}
 
-	Expr* left;
+	std::unique_ptr<Expr> left;
 	Token op;
-	Expr* right;
+	std::unique_ptr<Expr> right;
 
-	void accept(VisitorExpr & visitor)
+	void accept(VisitorExpr & visitor) override
 	{
 		visitor.visitLogicalExpr(*this);
 	}
@@ -154,16 +155,16 @@ struct LogicalExpr : Expr
 
 struct SetExpr : Expr
 {
-	SetExpr(Expr* object, Token name, Expr* value)
-		: object { object }, name { name }, value { value }
+	SetExpr(std::unique_ptr<Expr> object, Token name, std::unique_ptr<Expr> value)
+		: object { std::move(object) }, name { std::move(name) }, value { std::move(value) }
 	{
 	}
 
-	Expr* object;
+	std::unique_ptr<Expr> object;
 	Token name;
-	Expr* value;
+	std::unique_ptr<Expr> value;
 
-	void accept(VisitorExpr & visitor)
+	void accept(VisitorExpr & visitor) override
 	{
 		visitor.visitSetExpr(*this);
 	}
@@ -172,13 +173,13 @@ struct SetExpr : Expr
 struct ThisExpr : Expr
 {
 	explicit ThisExpr(Token keyword)
-		: keyword { keyword }
+		: keyword { std::move(keyword) }
 	{
 	}
 
 	Token keyword;
 
-	void accept(VisitorExpr & visitor)
+	void accept(VisitorExpr & visitor) override
 	{
 		visitor.visitThisExpr(*this);
 	}
@@ -186,15 +187,15 @@ struct ThisExpr : Expr
 
 struct UnaryExpr : Expr
 {
-	UnaryExpr(Token op, Expr* right)
-		: op { op }, right { right }
+	UnaryExpr(Token op, std::unique_ptr<Expr> right)
+		: op { std::move(op) }, right { std::move(right) }
 	{
 	}
 
 	Token op;
-	Expr* right;
+	std::unique_ptr<Expr> right;
 
-	void accept(VisitorExpr & visitor)
+	void accept(VisitorExpr & visitor) override
 	{
 		visitor.visitUnaryExpr(*this);
 	}
@@ -203,13 +204,13 @@ struct UnaryExpr : Expr
 struct VariableExpr : Expr
 {
 	explicit VariableExpr(Token name)
-		: name { name }
+		: name { std::move(name) }
 	{
 	}
 
 	Token name;
 
-	void accept(VisitorExpr & visitor)
+	void accept(VisitorExpr & visitor) override
 	{
 		visitor.visitVariableExpr(*this);
 	}
@@ -247,14 +248,14 @@ struct Stmt
 
 struct BlockStmt : Stmt
 {
-	explicit BlockStmt(std::vector<Stmt*> statements)
-		: statements { statements }
+	explicit BlockStmt(std::vector<std::unique_ptr<Stmt>> statements)
+		: statements { std::move(statements) }
 	{
 	}
 
-	std::vector<Stmt*> statements;
+	std::vector<std::unique_ptr<Stmt>> statements;
 
-	void accept(VisitorStmt & visitor)
+	void accept(VisitorStmt & visitor) override
 	{
 		visitor.visitBlockStmt(*this);
 	}
@@ -262,15 +263,15 @@ struct BlockStmt : Stmt
 
 struct ClassStmt : Stmt
 {
-	ClassStmt(Token name, std::vector<FunctionStmt*> methods)
-		: name { name }, methods { methods }
+	ClassStmt(Token name, std::vector<std::unique_ptr<FunctionStmt>> methods)
+		: name { std::move(name) }, methods { std::move(methods) }
 	{
 	}
 
 	Token name;
-	std::vector<FunctionStmt*> methods;
+	std::vector<std::unique_ptr<FunctionStmt>> methods;
 
-	void accept(VisitorStmt & visitor)
+	void accept(VisitorStmt & visitor) override
 	{
 		visitor.visitClassStmt(*this);
 	}
@@ -278,14 +279,14 @@ struct ClassStmt : Stmt
 
 struct ExpressionStmt : Stmt
 {
-	explicit ExpressionStmt(Expr* expression)
-		: expression { expression }
+	explicit ExpressionStmt(std::unique_ptr<Expr> expression)
+		: expression { std::move(expression) }
 	{
 	}
 
-	Expr* expression;
+	std::unique_ptr<Expr> expression;
 
-	void accept(VisitorStmt & visitor)
+	void accept(VisitorStmt & visitor) override
 	{
 		visitor.visitExpressionStmt(*this);
 	}
@@ -293,16 +294,16 @@ struct ExpressionStmt : Stmt
 
 struct FunctionStmt : Stmt
 {
-	FunctionStmt(Token name, std::vector<Token> parameters, std::vector<Stmt*> body)
-		: name { name }, parameters { parameters }, body { body }
+	FunctionStmt(Token name, std::vector<Token> parameters, std::vector<std::unique_ptr<Stmt>> body)
+		: name { std::move(name) }, parameters { std::move(parameters) }, body { std::move(body) }
 	{
 	}
 
 	Token name;
 	std::vector<Token> parameters;
-	std::vector<Stmt*> body;
+	std::vector<std::unique_ptr<Stmt>> body;
 
-	void accept(VisitorStmt & visitor)
+	void accept(VisitorStmt & visitor) override
 	{
 		visitor.visitFunctionStmt(*this);
 	}
@@ -310,16 +311,16 @@ struct FunctionStmt : Stmt
 
 struct IfStmt : Stmt
 {
-	IfStmt(Expr* condition, Stmt* thenBranch, Stmt* elseBranch)
-		: condition { condition }, thenBranch { thenBranch }, elseBranch { elseBranch }
+	IfStmt(std::unique_ptr<Expr> condition, std::unique_ptr<Stmt> thenBranch, std::unique_ptr<Stmt> elseBranch)
+		: condition { std::move(condition) }, thenBranch { std::move(thenBranch) }, elseBranch { std::move(elseBranch) }
 	{
 	}
 
-	Expr* condition;
-	Stmt* thenBranch;
-	Stmt* elseBranch;
+	std::unique_ptr<Expr> condition;
+	std::unique_ptr<Stmt> thenBranch;
+	std::unique_ptr<Stmt> elseBranch;
 
-	void accept(VisitorStmt & visitor)
+	void accept(VisitorStmt & visitor) override
 	{
 		visitor.visitIfStmt(*this);
 	}
@@ -327,14 +328,14 @@ struct IfStmt : Stmt
 
 struct PrintStmt : Stmt
 {
-	explicit PrintStmt(Expr* expression)
-		: expression { expression }
+	explicit PrintStmt(std::unique_ptr<Expr> expression)
+		: expression { std::move(expression) }
 	{
 	}
 
-	Expr* expression;
+	std::unique_ptr<Expr> expression;
 
-	void accept(VisitorStmt & visitor)
+	void accept(VisitorStmt & visitor) override
 	{
 		visitor.visitPrintStmt(*this);
 	}
@@ -342,15 +343,15 @@ struct PrintStmt : Stmt
 
 struct ReturnStmt : Stmt
 {
-	ReturnStmt(Token keyword, Expr* value)
-		: keyword { keyword }, value { value }
+	ReturnStmt(Token keyword, std::unique_ptr<Expr> value)
+		: keyword { std::move(keyword) }, value { std::move(value) }
 	{
 	}
 
 	Token keyword;
-	Expr* value;
+	std::unique_ptr<Expr> value;
 
-	void accept(VisitorStmt & visitor)
+	void accept(VisitorStmt & visitor) override
 	{
 		visitor.visitReturnStmt(*this);
 	}
@@ -358,15 +359,15 @@ struct ReturnStmt : Stmt
 
 struct VarStmt : Stmt
 {
-	VarStmt(Token name, Expr* initializer)
-		: name { name }, initializer { initializer }
+	VarStmt(Token name, std::unique_ptr<Expr> initializer)
+		: name { std::move(name) }, initializer { std::move(initializer) }
 	{
 	}
 
 	Token name;
-	Expr* initializer;
+	std::unique_ptr<Expr> initializer;
 
-	void accept(VisitorStmt & visitor)
+	void accept(VisitorStmt & visitor) override
 	{
 		visitor.visitVarStmt(*this);
 	}
@@ -374,15 +375,15 @@ struct VarStmt : Stmt
 
 struct WhileStmt : Stmt
 {
-	WhileStmt(Expr* condition, Stmt* body)
-		: condition { condition }, body { body }
+	WhileStmt(std::unique_ptr<Expr> condition, std::unique_ptr<Stmt> body)
+		: condition { std::move(condition) }, body { std::move(body) }
 	{
 	}
 
-	Expr* condition;
-	Stmt* body;
+	std::unique_ptr<Expr> condition;
+	std::unique_ptr<Stmt> body;
 
-	void accept(VisitorStmt & visitor)
+	void accept(VisitorStmt & visitor) override
 	{
 		visitor.visitWhileStmt(*this);
 	}

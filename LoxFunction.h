@@ -12,17 +12,24 @@ class LoxInstance;
 class LoxFunction : public LoxCallable
 {
 public:
-    LoxFunction(FunctionStmt* declaration, Environment* closure, bool isInitializer);
+    LoxFunction(FunctionStmt & declaration, std::shared_ptr<Environment> closure, bool isInitializer);
     Object call(Interpreter & interpreter, std::vector<Object> arguments) override;
     int arity() const override;
 
-    LoxFunction* bind(LoxInstance* instance);
+    LoxFunction(const LoxFunction &) = delete;
+    LoxFunction(LoxFunction &&) = default;
+
+    LoxFunction & operator=(const LoxFunction &) = delete;
+    LoxFunction & operator=(LoxFunction &&) = default;
+    ~LoxFunction() = default;
+
+    std::unique_ptr<LoxFunction> bind(std::shared_ptr<LoxInstance> instance);
 
     std::string getName() const override { return "<fun>"; }
 
 private:
-    FunctionStmt* declaration;
-    Environment* closure;
+    FunctionStmt & declaration;
+    std::shared_ptr<Environment> closure;
     bool isInitializer;
 };
 

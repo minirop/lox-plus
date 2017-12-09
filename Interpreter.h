@@ -42,23 +42,25 @@ public:
     void visitReturnStmt(ReturnStmt & stmt) override;
     void visitVarStmt(VarStmt & stmt) override;
 
-    void interpret(std::vector<Stmt*> statements);
+    void interpret(const std::vector<std::unique_ptr<Stmt>> & statements);
 
     void resolve(Expr & expr, unsigned long depth);
 
 private:
     std::stack<Object> stack;
-    Environment globals;
-    Environment* environment = &globals;
+    std::shared_ptr<Environment> globals = std::make_shared<Environment>();
+    std::shared_ptr<Environment> environment = globals;
     std::map<Expr*, unsigned long> locals;
 
     Object evaluate(Expr* expr);
+    Object evaluate(const std::unique_ptr<Expr> & expr) { return evaluate(expr.get()); }
 
     bool isTruthy(Object object);
     bool isEqual(Object left, Object right);
 
     void execute(Stmt* stmt);
-    void executeBlock(std::vector<Stmt *> statements, Environment * environment);
+    void execute(const std::unique_ptr<Stmt> & stmt) { execute(stmt.get()); }
+    void executeBlock(const std::vector<std::unique_ptr<Stmt>> & statements, std::shared_ptr<Environment> environment);
 
     friend class LoxFunction;
 

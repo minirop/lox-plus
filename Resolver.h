@@ -6,6 +6,7 @@
 #define LOXPLUS_RESOLVER_H
 
 
+#include <memory>
 #include "ast.h"
 #include "Interpreter.h"
 
@@ -36,7 +37,7 @@ public:
     void visitReturnStmt(ReturnStmt & stmt) override;
     void visitVarStmt(VarStmt & stmt) override;
 
-    void resolve(std::vector<Stmt *> statements);
+    void resolve(const std::vector<std::unique_ptr<Stmt>> & statements);
 
 private:
     enum class FunctionType
@@ -63,7 +64,9 @@ private:
     void endScope();
 
     void resolve(Stmt * stmt);
+    void resolve(const std::unique_ptr<Stmt> & stmt) { resolve(stmt.get()); }
     void resolve(Expr * expr);
+    void resolve(const std::unique_ptr<Expr> & expr) { resolve(expr.get()); }
 
     void declare(Token name);
 

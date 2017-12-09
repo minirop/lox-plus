@@ -29,7 +29,7 @@ void Interpreter::visitAssignExpr(AssignExpr & expr)
     }
     else
     {
-        globals.assign(expr.name, value);
+        globals->assign(expr.name, value);
     }
 
     environment->assign(expr.name, value);
@@ -285,7 +285,7 @@ Object Interpreter::evaluate(Expr * expr)
     return s;
 }
 
-void Interpreter::interpret(std::vector<Stmt*> statements)
+void Interpreter::interpret(const std::vector<std::unique_ptr<Stmt>> & statements)
 {
     try
     {
@@ -302,21 +302,21 @@ void Interpreter::interpret(std::vector<Stmt*> statements)
 
 void Interpreter::visitBlockStmt(BlockStmt & stmt)
 {
-    executeBlock(stmt.statements, new Environment(environment));
+    executeBlock(stmt.statements, std::make_shared<Environment>(environment.get()));
 }
 
 void Interpreter::visitClassStmt(ClassStmt & stmt)
 {
     environment->define(stmt.name.lexeme, nullptr);
 
-    std::map<std::string, LoxFunction*> methods;
+    std::map<std::string, std::shared_ptr<LoxFunction>> methods;
     for (auto & method : stmt.methods)
     {
-        auto function = new LoxFunction(method, environment, method->name.lexeme == "init");
+        auto function = std::make_shared<LoxFunction>(*method, environment, method->name.lexeme == "init");
         methods.emplace(method->name.lexeme, function);
     }
 
-    auto klass = new LoxClass(stmt.name.lexeme, methods);
+    auto klass = std::make_shared<LoxClass>(stmt.name.lexeme, std::move(methods));
     environment->assign(stmt.name, klass);
 }
 
@@ -327,8 +327,8 @@ void Interpreter::visitExpressionStmt(ExpressionStmt & stmt)
 
 void Interpreter::visitFunctionStmt(FunctionStmt & stmt)
 {
-    auto function = new LoxFunction(&stmt, environment, false);
-    environment->define(stmt.name.lexeme, function);
+    auto function = std::make_shared<LoxFunction>(stmt, environment, false);
+    environment->define(stmt.name.lexeme, std::move(function));
 }
 
 void Interpreter::visitIfStmt(IfStmt & stmt)
@@ -381,7 +381,7 @@ void Interpreter::execute(Stmt * stmt)
     stmt->accept(*this);
 }
 
-void Interpreter::executeBlock(std::vector<Stmt*> statements, Environment * environment)
+void Interpreter::executeBlock(const std::vector<std::unique_ptr<Stmt>> & statements, std::shared_ptr<Environment> environment)
 {
     auto previous = this->environment;
 
@@ -416,6 +416,6 @@ void Interpreter::lookUpVariable(Token name, Expr & expr)
     }
     else
     {
-        stack.push(globals.get(name));
+        stack.push(globals->get(name));
     }
 }

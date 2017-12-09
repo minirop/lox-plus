@@ -12,10 +12,17 @@
 #include <map>
 #include "Token.h"
 #include <iostream>
+
 class Scanner
 {
 public:
     explicit Scanner(std::string_view source);
+
+    Scanner(const Scanner &) = delete;
+    Scanner(Scanner &&) = delete;
+    Scanner & operator=(const Scanner &) = delete;
+    Scanner & operator=(Scanner &&) = delete;
+    ~Scanner() = default;
 
     std::vector<Token> scanTokens();
     bool isAtEnd();
@@ -66,10 +73,8 @@ private:
 template <typename T>
 void Scanner::addToken(TokenType type, T literal)
 {
-    std::string text = std::string { source.substr(start, current-start) };
+    auto text = std::string { source.substr(start, current-start) };
     tokens.emplace_back(type, text, literal, line);
-    //Token t ( type, text, literal, line );
-    //tokens.push_back(t);
 }
 
 #endif //LOXPLUS_SCANNER_H

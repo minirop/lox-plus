@@ -5,7 +5,6 @@
 #include "Lox-plus.h"
 #include "Scanner.h"
 #include "ast.h"
-#include "AstPrinter.h"
 #include "Parser.h"
 #include "Interpreter.h"
 #include "Resolver.h"

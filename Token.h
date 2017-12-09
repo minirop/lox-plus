@@ -10,6 +10,7 @@
 #include <variant>
 #include "TokenType.h"
 #include "Object.h"
+#include "ObjectVar.h"
 
 class Token
 {
@@ -20,10 +21,19 @@ public:
     {
     }
 
-    const TokenType type;
-    const std::string lexeme;
-    const Object literal;
-    const std::size_t line;
+    Token() = delete;
+    Token(const Token &) = default;
+    Token(Token &&) = default;
+
+    Token & operator=(const Token &) = default;
+    Token & operator=(Token &&) = default;
+
+    ~Token() = default;
+
+    TokenType type;
+    std::string lexeme;
+    Object literal;
+    std::size_t line;
 };
 
 #endif //LOXPLUS_TOKEN_H

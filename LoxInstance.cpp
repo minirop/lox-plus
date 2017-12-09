@@ -7,8 +7,8 @@
 #include "RuntimeError.h"
 #include "LoxFunction.h"
 
-LoxInstance::LoxInstance(LoxClass * klass)
-    : klass { klass }
+LoxInstance::LoxInstance(std::shared_ptr<LoxClass> klass)
+    : klass { std::move(klass) }
 {
 }
 
@@ -19,8 +19,8 @@ Object LoxInstance::get(Token name)
         return fields[name.lexeme];
     }
 
-    auto method = klass->findMethod(this, name.lexeme);
-    if (method != nullptr)
+    auto method = klass->findMethod(shared_from_this(), name.lexeme);
+    if (method)
     {
         return method;
     }
@@ -30,5 +30,5 @@ Object LoxInstance::get(Token name)
 
 void LoxInstance::set(Token name, Object value)
 {
-    fields[name.lexeme] = value;
+    fields[name.lexeme] = std::move(value);
 }

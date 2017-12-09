@@ -14,6 +14,12 @@ class RuntimeError : public std::runtime_error
 public:
     RuntimeError(Token token, std::string message);
 
+    RuntimeError(const RuntimeError &) = delete;
+    RuntimeError(RuntimeError &&) = default;
+    RuntimeError & operator=(const RuntimeError &) = delete;
+    RuntimeError & operator=(RuntimeError &&) = default;
+
+
     const Token token;
 };
 

@@ -188,7 +188,7 @@ void Resolver::endScope()
     scopes.pop_back();
 }
 
-void Resolver::resolve(std::vector<Stmt *> statements)
+void Resolver::resolve(const std::vector<std::unique_ptr<Stmt>> & statements)
 {
     for (auto & statement : statements)
     {
@@ -227,7 +227,8 @@ void Resolver::define(Token name)
 
 void Resolver::resolveLocal(Expr & expr, Token name)
 {
-    for (auto i = static_cast<long int>(scopes.size()) - 1; i >= 0; i--)
+    auto size = static_cast<long int>(scopes.size());
+    for (auto i = size - 1; i >= 0; i--)
     {
         if (scopes[i].count(name.lexeme))
         {

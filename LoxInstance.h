@@ -7,18 +7,20 @@
 
 #include "LoxClass.h"
 
-class LoxInstance
+class Token;
+
+class LoxInstance : public std::enable_shared_from_this<LoxInstance>
 {
 public:
-    explicit LoxInstance(LoxClass* klass);
+    explicit LoxInstance(std::shared_ptr<LoxClass> klass);
 
     Object get(Token name);
     void set(Token name, Object value);
 
-    LoxClass * getClass() const { return klass; }
+    std::shared_ptr<LoxClass> getClass() const { return klass; }
 
 private:
-    LoxClass * klass;
+    std::shared_ptr<LoxClass> klass;
     std::map<std::string, Object> fields;
 };
 
