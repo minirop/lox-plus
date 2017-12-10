@@ -10,7 +10,6 @@
 #include <variant>
 #include "TokenType.h"
 #include "Object.h"
-#include "ObjectVar.h"
 
 class Token
 {

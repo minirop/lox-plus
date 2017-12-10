@@ -2,7 +2,6 @@
 // Created by minirop on 01/12/17.
 //
 
-#include <iostream>
 #include "Resolver.h"
 #include "Lox-plus.h"
 
@@ -188,7 +187,7 @@ void Resolver::endScope()
     scopes.pop_back();
 }
 
-void Resolver::resolve(const std::vector<std::unique_ptr<Stmt>> & statements)
+void Resolver::resolve(const std::vector<Stmt*> & statements)
 {
     for (auto & statement : statements)
     {

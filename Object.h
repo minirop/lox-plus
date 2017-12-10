@@ -14,10 +14,9 @@ class LoxClass;
 class LoxInstance;
 class LoxCallable;
 
-#include "ObjectVar.h"
-
 class Object
 {
+    using ObjectVar = std::variant<std::nullptr_t, std::string, double, bool, LoxFunction*, LoxClass*, LoxInstance*>;
 
 public:
     Object();
@@ -26,9 +25,9 @@ public:
     Object(bool b);
     Object(std::nullptr_t);
     Object(std::string string);
-    Object(std::shared_ptr<LoxFunction> function);
-    Object(std::shared_ptr<LoxClass> klass);
-    Object(std::shared_ptr<LoxInstance> instance);
+    Object(LoxFunction * function);
+    Object(LoxClass * klass);
+    Object(LoxInstance * instance);
 
     template <typename T>
     Object(T*) = delete;
@@ -59,7 +58,7 @@ public:
     LoxInstance* asInstance() const;
 
 private:
-    std::shared_ptr<ObjectVar> data;
+    ObjectVar data;
 
     friend std::string to_string(const Object & object);
 };

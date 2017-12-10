@@ -285,7 +285,7 @@ Object Interpreter::evaluate(Expr * expr)
     return s;
 }
 
-void Interpreter::interpret(const std::vector<std::unique_ptr<Stmt>> & statements)
+void Interpreter::interpret(const std::vector<Stmt*> & statements)
 {
     try
     {
@@ -302,21 +302,21 @@ void Interpreter::interpret(const std::vector<std::unique_ptr<Stmt>> & statement
 
 void Interpreter::visitBlockStmt(BlockStmt & stmt)
 {
-    executeBlock(stmt.statements, std::make_shared<Environment>(environment.get()));
+    executeBlock(stmt.statements, Environment::create(environment));
 }
 
 void Interpreter::visitClassStmt(ClassStmt & stmt)
 {
     environment->define(stmt.name.lexeme, nullptr);
 
-    std::map<std::string, std::shared_ptr<LoxFunction>> methods;
+    std::map<std::string, LoxFunction*> methods;
     for (auto & method : stmt.methods)
     {
-        auto function = std::make_shared<LoxFunction>(method.get(), environment, method->name.lexeme == "init");
+        auto function = LoxFunction::create(method, environment, method->name.lexeme == "init");
         methods.emplace(method->name.lexeme, function);
     }
 
-    auto klass = std::make_shared<LoxClass>(stmt.name.lexeme, std::move(methods));
+    auto klass = LoxClass::create(stmt.name.lexeme, std::move(methods));
     environment->assign(stmt.name, klass);
 }
 
@@ -327,8 +327,8 @@ void Interpreter::visitExpressionStmt(ExpressionStmt & stmt)
 
 void Interpreter::visitFunctionStmt(FunctionStmt & stmt)
 {
-    auto function = std::make_shared<LoxFunction>(&stmt, environment, false);
-    environment->define(stmt.name.lexeme, std::move(function));
+    auto function = LoxFunction::create(&stmt, environment, false);
+    environment->define(stmt.name.lexeme, function);
 }
 
 void Interpreter::visitIfStmt(IfStmt & stmt)
@@ -381,13 +381,13 @@ void Interpreter::execute(Stmt * stmt)
     stmt->accept(*this);
 }
 
-void Interpreter::executeBlock(const std::vector<std::unique_ptr<Stmt>> & statements, std::shared_ptr<Environment> environment)
+void Interpreter::executeBlock(const std::vector<Stmt*> & statements, Environment* environment)
 {
     auto previous = this->environment;
 
     try
     {
-        this->environment = std::move(environment);
+        this->environment = environment;
 
         for (auto & statement : statements)
         {

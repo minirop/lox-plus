@@ -7,10 +7,12 @@
 
 #include <map>
 #include <string>
+#include <vector>
 #include "Object.h"
 #include "Token.h"
+#include "CreatableType.h"
 
-class Environment
+class Environment : public CreatableType<Environment>
 {
 public:
     Environment() = default;

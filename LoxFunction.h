@@ -9,10 +9,10 @@
 
 class LoxInstance;
 
-class LoxFunction : public LoxCallable
+class LoxFunction : public CreatableType<LoxFunction>, public LoxCallable
 {
 public:
-    LoxFunction(FunctionStmt * declaration, std::shared_ptr<Environment> closure, bool isInitializer);
+    LoxFunction(FunctionStmt * declaration, Environment * closure, bool isInitializer);
     Object call(Interpreter & interpreter, std::vector<Object> arguments) override;
     int arity() const override;
 
@@ -23,13 +23,13 @@ public:
     LoxFunction & operator=(LoxFunction &&) = default;
     ~LoxFunction() override = default;
 
-    std::unique_ptr<LoxFunction> bind(std::shared_ptr<LoxInstance> instance);
+    LoxFunction* bind(LoxInstance* instance);
 
     std::string getName() const override { return "<fun>"; }
 
 private:
     FunctionStmt * declaration;
-    std::shared_ptr<Environment> closure;
+    Environment * closure;
     bool isInitializer;
 };
 

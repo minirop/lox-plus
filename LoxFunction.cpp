@@ -6,15 +6,15 @@
 #include "Return.h"
 #include "LoxInstance.h"
 
-LoxFunction::LoxFunction(FunctionStmt * declaration, std::shared_ptr<Environment> closure, bool isInitializer)
-    : declaration { declaration }, closure { std::move(closure) }, isInitializer { isInitializer }
+LoxFunction::LoxFunction(FunctionStmt * declaration, Environment * closure, bool isInitializer)
+    : declaration { declaration }, closure { closure }, isInitializer { isInitializer }
 {
 
 }
 
 Object LoxFunction::call(Interpreter & interpreter, std::vector<Object> arguments)
 {
-    auto environment = std::make_shared<Environment>(closure.get());
+    auto environment = Environment::create(closure);
     int i = 0;
     for (auto & parameter : declaration->parameters)
     {
@@ -40,9 +40,9 @@ int LoxFunction::arity() const
     return static_cast<int>(declaration->parameters.size());
 }
 
-std::unique_ptr<LoxFunction> LoxFunction::bind(std::shared_ptr<LoxInstance> instance)
+LoxFunction* LoxFunction::bind(LoxInstance * instance)
 {
-    auto environment = std::make_shared<Environment>(closure.get());
-    environment->define("this", std::move(instance));
-    return std::make_unique<LoxFunction>(declaration, std::move(environment), isInitializer);
+    auto environment = Environment::create(closure);
+    environment->define("this", instance);
+    return LoxFunction::create(declaration, environment, isInitializer);
 }

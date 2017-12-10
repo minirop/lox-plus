@@ -37,7 +37,7 @@ public:
     void visitReturnStmt(ReturnStmt & stmt) override;
     void visitVarStmt(VarStmt & stmt) override;
 
-    void resolve(const std::vector<std::unique_ptr<Stmt>> & statements);
+    void resolve(const std::vector<Stmt*> & statements);
 
 private:
     enum class FunctionType
@@ -64,9 +64,7 @@ private:
     void endScope();
 
     void resolve(Stmt * stmt);
-    void resolve(const std::unique_ptr<Stmt> & stmt) { resolve(stmt.get()); }
     void resolve(Expr * expr);
-    void resolve(const std::unique_ptr<Expr> & expr) { resolve(expr.get()); }
 
     void declare(Token name);
 

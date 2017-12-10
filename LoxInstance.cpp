@@ -2,13 +2,12 @@
 // Created by minirop on 02/12/17.
 //
 
-#include <iostream>
 #include "LoxInstance.h"
 #include "RuntimeError.h"
 #include "LoxFunction.h"
 
-LoxInstance::LoxInstance(std::shared_ptr<LoxClass> klass)
-    : klass { std::move(klass) }
+LoxInstance::LoxInstance(LoxClass * klass)
+    : klass { klass }
 {
 }
 
@@ -19,7 +18,7 @@ Object LoxInstance::get(Token name)
         return fields[name.lexeme];
     }
 
-    auto method = klass->findMethod(shared_from_this(), name.lexeme);
+    auto method = klass->findMethod(this, name.lexeme);
     if (method)
     {
         return method;

@@ -9,18 +9,18 @@
 
 class Token;
 
-class LoxInstance : public std::enable_shared_from_this<LoxInstance>
+class LoxInstance : public CreatableType<LoxInstance>
 {
 public:
-    explicit LoxInstance(std::shared_ptr<LoxClass> klass);
+    explicit LoxInstance(LoxClass * klass);
 
     Object get(Token name);
     void set(Token name, Object value);
 
-    std::shared_ptr<LoxClass> getClass() const { return klass; }
+    LoxClass * getClass() const { return klass; }
 
 private:
-    std::shared_ptr<LoxClass> klass;
+    LoxClass * klass;
     std::map<std::string, Object> fields;
 };
 

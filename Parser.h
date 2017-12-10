@@ -15,33 +15,33 @@ class Parser
 public:
     explicit Parser(std::vector<Token> tokens);
 
-    std::vector<std::unique_ptr<Stmt>> parse();
+    std::vector<Stmt*> parse();
 
 private:
-    std::unique_ptr<Expr> assignment();
-    std::unique_ptr<Expr> expression();
-    std::unique_ptr<Expr> equality();
-    std::unique_ptr<Expr> comparison();
-    std::unique_ptr<Expr> addition();
-    std::unique_ptr<Expr> multiplication();
-    std::unique_ptr<Expr> unary();
-    std::unique_ptr<Expr> primary();
-    std::unique_ptr<Expr> or_();
-    std::unique_ptr<Expr> and_();
-    std::unique_ptr<Expr> call();
+    Expr* assignment();
+    Expr* expression();
+    Expr* equality();
+    Expr* comparison();
+    Expr* addition();
+    Expr* multiplication();
+    Expr* unary();
+    Expr* primary();
+    Expr* or_();
+    Expr* and_();
+    Expr* call();
 
-    std::unique_ptr<Stmt> statement();
-    std::unique_ptr<Stmt> declaration();
-    std::unique_ptr<Stmt> classDeclaration();
-    std::unique_ptr<Stmt> expressionStatement();
-    std::unique_ptr<Stmt> forStatement();
-    std::unique_ptr<Stmt> ifStatement();
-    std::unique_ptr<Stmt> printStatement();
-    std::unique_ptr<Stmt> returnStatement();
-    std::unique_ptr<Stmt> varDeclaration();
-    std::unique_ptr<Stmt> whileStatement();
+    Stmt* statement();
+    Stmt* declaration();
+    Stmt* classDeclaration();
+    Stmt* expressionStatement();
+    Stmt* forStatement();
+    Stmt* ifStatement();
+    Stmt* printStatement();
+    Stmt* returnStatement();
+    Stmt* varDeclaration();
+    Stmt* whileStatement();
 
-    std::vector<std::unique_ptr<Stmt>> block();
+    std::vector<Stmt*> block();
 
     const Token & advance();
 
@@ -60,8 +60,8 @@ private:
     std::vector<Token> tokens;
     std::size_t current = 0;
 
-    std::unique_ptr<Expr> finishCall(std::unique_ptr<Expr> callee);
-    std::unique_ptr<FunctionStmt> function(std::string kind);
+    Expr* finishCall(Expr* callee);
+    FunctionStmt* function(std::string kind);
 
 };
 
