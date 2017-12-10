@@ -6,7 +6,7 @@
 #include "Return.h"
 #include "LoxInstance.h"
 
-LoxFunction::LoxFunction(FunctionStmt * declaration, Environment * closure, bool isInitializer)
+LoxFunction::LoxFunction(FunctionStmt* declaration, Environment* closure, bool isInitializer)
     : declaration { declaration }, closure { closure }, isInitializer { isInitializer }
 {
 
@@ -40,7 +40,7 @@ int LoxFunction::arity() const
     return static_cast<int>(declaration->parameters.size());
 }
 
-LoxFunction* LoxFunction::bind(LoxInstance * instance)
+LoxFunction* LoxFunction::bind(LoxInstance* instance)
 {
     auto environment = Environment::create(closure);
     environment->define("this", instance);

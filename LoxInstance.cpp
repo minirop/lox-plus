@@ -6,7 +6,7 @@
 #include "RuntimeError.h"
 #include "LoxFunction.h"
 
-LoxInstance::LoxInstance(LoxClass * klass)
+LoxInstance::LoxInstance(LoxClass* klass)
     : klass { klass }
 {
 }

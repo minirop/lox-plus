@@ -63,8 +63,8 @@ private:
 
     void endScope();
 
-    void resolve(Stmt * stmt);
-    void resolve(Expr * expr);
+    void resolve(Stmt* stmt);
+    void resolve(Expr* expr);
 
     void declare(Token name);
 

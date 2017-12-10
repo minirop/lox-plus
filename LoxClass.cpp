@@ -33,7 +33,7 @@ int LoxClass::arity() const
     return 0;
 }
 
-LoxFunction * LoxClass::findMethod(LoxInstance * instance, std::string name)
+LoxFunction* LoxClass::findMethod(LoxInstance* instance, std::string name)
 {
     if (methods.count(name))
     {

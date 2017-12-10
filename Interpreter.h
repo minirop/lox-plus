@@ -48,8 +48,8 @@ public:
 
 private:
     std::stack<Object> stack;
-    Environment * globals = Environment::create();
-    Environment * environment = globals;
+    Environment* globals = Environment::create();
+    Environment* environment = globals;
     std::map<Expr*, unsigned long> locals;
 
     Object evaluate(Expr* expr);

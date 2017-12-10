@@ -12,7 +12,7 @@ class LoxInstance;
 class LoxFunction : public CreatableType<LoxFunction>, public LoxCallable
 {
 public:
-    LoxFunction(FunctionStmt * declaration, Environment * closure, bool isInitializer);
+    LoxFunction(FunctionStmt* declaration, Environment* closure, bool isInitializer);
     Object call(Interpreter & interpreter, std::vector<Object> arguments) override;
     int arity() const override;
 
@@ -28,8 +28,8 @@ public:
     std::string getName() const override { return "<fun>"; }
 
 private:
-    FunctionStmt * declaration;
-    Environment * closure;
+    FunctionStmt* declaration;
+    Environment* closure;
     bool isInitializer;
 };
 

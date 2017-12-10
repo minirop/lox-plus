@@ -46,7 +46,7 @@ Object::Object(LoxClass* klass)
 {
 }
 
-Object::Object(LoxInstance * instance)
+Object::Object(LoxInstance* instance)
     : data { instance }
 {
 }
@@ -111,7 +111,7 @@ std::string Object::asString() const
     return std::get<std::string>(data);
 }
 
-LoxCallable * Object::asCallable() const
+LoxCallable* Object::asCallable() const
 {
     if (isFunction())
     {
@@ -127,7 +127,7 @@ LoxCallable * Object::asCallable() const
     }
 }
 
-LoxInstance * Object::asInstance() const
+LoxInstance* Object::asInstance() const
 {
     return std::get<LoxInstance*>(data);
 }

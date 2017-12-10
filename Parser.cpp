@@ -292,11 +292,11 @@ Expr* Parser::assignment()
         auto equals = previous();
         auto value = assignment();
 
-        if (auto * varExpr = dynamic_cast<VariableExpr*>(expr); varExpr != nullptr)
+        if (auto* varExpr = dynamic_cast<VariableExpr*>(expr); varExpr != nullptr)
         {
             return AssignExpr::create(std::move(varExpr->name), std::move(value));
         }
-        else if (auto * getExpr = dynamic_cast<GetExpr*>(expr); getExpr != nullptr)
+        else if (auto* getExpr = dynamic_cast<GetExpr*>(expr); getExpr != nullptr)
         {
             return SetExpr::create(getExpr->object, getExpr->name, value);
         }

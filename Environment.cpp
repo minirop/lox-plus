@@ -6,7 +6,7 @@
 #include "Environment.h"
 #include "RuntimeError.h"
 
-Environment::Environment(Environment * enclosing)
+Environment::Environment(Environment* enclosing)
     : enclosing(enclosing)
 {
 }
@@ -50,7 +50,7 @@ Object Environment::getAt(unsigned long distance, const std::string name)
     return ancestor(distance)->values[name];
 }
 
-Environment * Environment::ancestor(unsigned long distance)
+Environment* Environment::ancestor(unsigned long distance)
 {
     auto environment = this;
     for (unsigned long i = 0; i < distance; i++)

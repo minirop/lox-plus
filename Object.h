@@ -25,9 +25,9 @@ public:
     Object(bool b);
     Object(std::nullptr_t);
     Object(std::string string);
-    Object(LoxFunction * function);
-    Object(LoxClass * klass);
-    Object(LoxInstance * instance);
+    Object(LoxFunction* function);
+    Object(LoxClass* klass);
+    Object(LoxInstance* instance);
 
     template <typename T>
     Object(T*) = delete;

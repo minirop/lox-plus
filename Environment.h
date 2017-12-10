@@ -16,7 +16,7 @@ class Environment : public CreatableType<Environment>
 {
 public:
     Environment() = default;
-    explicit Environment(Environment * enclosing);
+    explicit Environment(Environment* enclosing);
 
     void define(std::string name, Object value);
     void assign(Token name, Object value);
@@ -28,9 +28,9 @@ public:
 
 private:
     std::map<std::string, Object> values;
-    Environment * enclosing = nullptr;
+    Environment* enclosing = nullptr;
 
-    Environment * ancestor(unsigned long distance);
+    Environment* ancestor(unsigned long distance);
 };
 
 

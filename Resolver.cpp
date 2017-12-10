@@ -195,12 +195,12 @@ void Resolver::resolve(const std::vector<Stmt*> & statements)
     }
 }
 
-void Resolver::resolve(Stmt * stmt)
+void Resolver::resolve(Stmt* stmt)
 {
     stmt->accept(*this);
 }
 
-void Resolver::resolve(Expr * expr)
+void Resolver::resolve(Expr* expr)
 {
     expr->accept(*this);
 }

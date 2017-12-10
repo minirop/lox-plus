@@ -277,7 +277,7 @@ bool Interpreter::isEqual(Object left, Object right)
     return false;
 }
 
-Object Interpreter::evaluate(Expr * expr)
+Object Interpreter::evaluate(Expr* expr)
 {
     expr->accept(*this);
     auto s = stack.top();
@@ -376,7 +376,7 @@ void Interpreter::visitWhileStmt(WhileStmt & stmt)
     }
 }
 
-void Interpreter::execute(Stmt * stmt)
+void Interpreter::execute(Stmt* stmt)
 {
     stmt->accept(*this);
 }
